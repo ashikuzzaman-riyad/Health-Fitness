@@ -1,4 +1,4 @@
-import { Request,  Response } from "express";
+import { Request, Response } from "express";
 import * as OrderService from "./order.service";
 
 export const createOrder = async (req: Request, res: Response) => {
@@ -15,6 +15,12 @@ export const getOrderbyId = async (req: Request, res: Response) => {
   const { id } = req.params;
   const order = await OrderService.getOrderbyId(id);
   res.json(order);
+};
+
+export const updateOrder = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const order = await OrderService.updateOrder(id, req.body);
+  res.json({ success: true, order });
 };
 
 export const deleteOrder = async (req: Request, res: Response) => {
