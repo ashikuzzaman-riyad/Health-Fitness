@@ -10,9 +10,16 @@ export const getProducts = () => {
   });
 };
 
-export const getProductsId = (id: string) => {
+// export const getProductsId = (id: string) => {
+//   return prisma.product.findUnique({
+//     where: { id },
+//     include: { category: true },
+//   });
+// };
+
+export const getProductsBySlug = (slug: string) => {
   return prisma.product.findUnique({
-    where: { id },
+    where: { slug },
     include: { category: true },
   });
 };

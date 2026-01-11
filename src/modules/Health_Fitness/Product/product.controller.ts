@@ -11,9 +11,15 @@ export const getProducts = async (_req: Request, res: Response) => {
   res.json(products);
 };
 
-export const getProductsId = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const product = await ProductService.getProductsId(id);
+// export const getProductsId = async (req: Request, res: Response) => {
+//   const { id } = req.params;
+//   const product = await ProductService.getProductsId(id);
+//   res.json(product);
+// };
+
+export const getProductsBySlug = async (req: Request, res: Response) => {
+  const { slug} = req.params;
+  const product = await ProductService.getProductsBySlug(slug);
   res.json(product);
 };
 

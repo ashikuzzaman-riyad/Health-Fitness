@@ -8,6 +8,12 @@ export const getCategories = () => {
   return prisma.category.findMany();
 };
 
+export const getCategoryBySlug = (slug: string) => {
+  return prisma.category.findUnique({
+    where: {slug},
+  })
+}
+
 export const updateCategory = (id: string, data: any) => {
   return prisma.category.update({
     where: { id },

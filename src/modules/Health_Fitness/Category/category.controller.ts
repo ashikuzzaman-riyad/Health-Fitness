@@ -11,14 +11,20 @@ export const getCategories = async (_req: Request, res: Response) => {
   res.json(categories);
 };
 
-export const getCategoriesUpdated = async (req: Request, res: Response) => {
-  const {id} = req.params;
-  const category = await CategoryService.updateCategory(id, req.body);
-  res.json({success: true, category});
-}
+export const getCategoriesBySlug = async (req: Request, res: Response) => {
+  const { slug } = req.params;
+  const category = await CategoryService.getCategoryBySlug(slug);
+  res.json(category);
+};
 
-export const getCategoriesDeleted = async ( req: Request, res: Response) => {
-  const {id} = req.params;
+export const getCategoriesUpdated = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const category = await CategoryService.updateCategory(id, req.body);
+  res.json({ success: true, category });
+};
+
+export const getCategoriesDeleted = async (req: Request, res: Response) => {
+  const { id } = req.params;
   const category = await CategoryService.deleteCategory(id);
-  res.json({success: true, message: "category deleted", category});
-}
+  res.json({ success: true, message: "category deleted", category });
+};
