@@ -4,11 +4,16 @@ export const createProduct = (data: any) => {
   return prisma.product.create({ data });
 };
 
-export const getProducts = () => {
+export const getProducts = (name?: string) => {
   return prisma.product.findMany({
-    include: { category: true },
+    where: name
+      ? { name: { contains: name, mode: "insensitive" } }
+      : {},
+    include: { category: true }
   });
 };
+
+
 
 // export const getProductsId = (id: string) => {
 //   return prisma.product.findUnique({

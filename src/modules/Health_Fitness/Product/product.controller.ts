@@ -6,10 +6,23 @@ export const createProduct = async (req: Request, res: Response) => {
   res.json(product);
 };
 
-export const getProducts = async (_req: Request, res: Response) => {
-  const products = await ProductService.getProducts();
-  res.json(products);
+export const getProducts = async (req: Request, res: Response) => {
+  try {
+    const { name } = req.query;
+
+    const products = await ProductService.getProducts(name as string | undefined);
+
+    res.status(200).json({
+      success: true,
+      data: products
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Something went wrong", error });
+  }
 };
+
+
+
 
 // export const getProductsId = async (req: Request, res: Response) => {
 //   const { id } = req.params;

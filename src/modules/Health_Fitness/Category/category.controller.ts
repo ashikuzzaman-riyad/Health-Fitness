@@ -17,6 +17,25 @@ export const getCategoriesBySlug = async (req: Request, res: Response) => {
   res.json(category);
 };
 
+export const getSubCategoriesBySlug = async (req: Request, res: Response) => {
+  const {slug} = req.params;
+  const subcategories = await CategoryService.getSubCategoriesBySlug(slug);
+  res.json(subcategories)
+}
+
+// GET /:slug/products
+export const getProducts = async (req, res) => {
+  const { slug } = req.params;
+
+  const products = await CategoryService.getProductsByAnyCategorySlug(slug);
+
+  res.json({
+    success: true,
+    data: products
+  });
+};
+
+
 export const getCategoriesUpdated = async (req: Request, res: Response) => {
   const { id } = req.params;
   const category = await CategoryService.updateCategory(id, req.body);
