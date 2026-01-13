@@ -1,9 +1,11 @@
 import { prisma } from "../../../lib/prisma";
 
+// create category
 export const createCategory = (data: any) => {
   return prisma.category.create({ data });
 };
 
+// get all categories
 export const getCategories = () => {
   return prisma.category.findMany({
     where: { parentId: null },
@@ -11,7 +13,8 @@ export const getCategories = () => {
   });
 };
 
-export const getSubCategoriesBySlug = async (slug: string) => {
+// get subcategories by slug
+export const getCategoryWithChildrenBySlug = async (slug: string) => {
   return prisma.category.findUnique({
     where: { slug },
     include: { children: true },
@@ -20,54 +23,20 @@ export const getSubCategoriesBySlug = async (slug: string) => {
 
 
 
+// get products by category slug
 export const getProductsByCategorySlug = async (slug: string) => {
   return prisma.product.findMany({
     where: {
-      category: {
-        slug: slug,
-      },
+      category: { slug },
     },
-    include: {
-      category: true,
-    },
+    include: { category: true },
   });
 };
 
-export const getProductsBySubCategorySlug = async (slug: string) => {
-  return prisma.product.findMany({
-    where: {
-      category: {
-        slug: slug,
-      },
-    },
-    include: {
-      category: true,
-    },
-  });
-};
 
-export const getProductsByMainCategory = async (slug: string) => {
-  const category = await prisma.category.findUnique({
-    where: { slug },
-    include: { children: true },
-  });
 
-  if (!category) return [];
 
-  const categoryIds = [category.id, ...category.children.map((c) => c.id)];
-
-  return prisma.product.findMany({
-    where: {
-      categoryId: {
-        in: categoryIds,
-      },
-    },
-    include: {
-      category: true,
-    },
-  });
-};
-
+// helper function to all category IDs recursively
 const getAllCategoryIds = async (categoryId: string): Promise<string[]> => {
   const children = await prisma.category.findMany({
     where: { parentId: categoryId },
@@ -99,11 +68,8 @@ export const getProductsByAnyCategorySlug = async (slug: string) => {
   });
 };
 
-export const getCategoryBySlug = (slug: string) => {
-  return prisma.category.findUnique({
-    where: { slug },
-  });
-};
+
+// update category
 
 export const updateCategory = (id: string, data: any) => {
   return prisma.category.update({
@@ -112,6 +78,7 @@ export const updateCategory = (id: string, data: any) => {
   });
 };
 
+// delete category
 export const deleteCategory = (id: string) => {
   return prisma.category.delete({
     where: { id },

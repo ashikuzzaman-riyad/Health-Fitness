@@ -1,49 +1,61 @@
 import { Request, Response } from "express";
 import * as ProductService from "./product.service";
+import { sendSuccess, sendError } from "../../../lib/helper";
 
+// create product
 export const createProduct = async (req: Request, res: Response) => {
-  const product = await ProductService.createProduct(req.body);
-  res.json(product);
+  try {
+    const product = await ProductService.createProduct(req.body);
+    sendSuccess(res, product, "Product created");
+  } catch (error) {
+    sendError(res, "Failed to create product", error);
+  }
 };
 
+// get all products with optional search query
 export const getProducts = async (req: Request, res: Response) => {
   try {
-    const { name } = req.query;
+    const { name, slug } = req.query;
 
-    const products = await ProductService.getProducts(name as string | undefined);
-
-    res.status(200).json({
-      success: true,
-      data: products
+    const products = await ProductService.getProducts({
+      name: name as string | undefined,
+      slug: slug as string | undefined,
     });
+
+    sendSuccess(res, products);
   } catch (error) {
-    res.status(500).json({ success: false, message: "Something went wrong", error });
+    console.error(error);
+    sendError(res, "Something went wrong while fetching products", error);
   }
 };
 
 
-
-
-// export const getProductsId = async (req: Request, res: Response) => {
-//   const { id } = req.params;
-//   const product = await ProductService.getProductsId(id);
-//   res.json(product);
-// };
-
 export const getProductsBySlug = async (req: Request, res: Response) => {
-  const { slug} = req.params;
-  const product = await ProductService.getProductsBySlug(slug);
-  res.json(product);
+  try {
+    const { slug } = req.params;
+    const product = await ProductService.getProductsBySlug(slug);
+    sendSuccess(res, product);
+  } catch (error) {
+    sendError(res, "Failed to fetch product", error);
+  }
 };
 
 export const updateProduct = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const product = await ProductService.updateProduct(id, req.body);
-  res.json({ success: true, product });
+  try {
+    const { id } = req.params;
+    const product = await ProductService.updateProduct(id, req.body);
+    sendSuccess(res, product, "Product updated");
+  } catch (error) {
+    sendError(res, "Failed to update product", error);
+  }
 };
 
 export const deleteProduct = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const product = await ProductService.deleteProduct(id);
-  res.json({ success: true, message: "product deleted", product });
+  try {
+    const { id } = req.params;
+    const product = await ProductService.deleteProduct(id);
+    sendSuccess(res, product, "Product deleted");
+  } catch (error) {
+    sendError(res, "Failed to delete product", error);
+  }
 };
