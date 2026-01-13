@@ -1,19 +1,19 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../../lib/prisma";
-import { cleanString } from ".././../../lib/helper";
+import { cleanString } from "../../../utils/helper";
 
 export const createProduct = (data: Prisma.ProductCreateInput) => {
   return prisma.product.create({ data });
 };
 
-
-
 // Search products with pagination and clean search
-interface SearchQuery {
+export interface SearchQuery {
   name?: string;
   slug?: string;
   page?: number;
   limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc"; // ✅ FIXED
 }
 
 export const getProducts = async (query?: SearchQuery) => {
@@ -30,11 +30,15 @@ export const getProducts = async (query?: SearchQuery) => {
   // Pagination: page & limit
   const page = query?.page && query.page > 0 ? query.page : 1;
   const limit = query?.limit && query.limit > 0 ? query.limit : 20;
-
+  // sorting
+  const sortBy = query?.sortBy || "createdAt";
+  const sortOrder = query?.sortOrder || "desc";
   return prisma.product.findMany({
     where: filters,
     include: { category: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: { 
+      [sortBy]: sortOrder,
+     },
     skip: (page - 1) * limit,
     take: limit,
   });

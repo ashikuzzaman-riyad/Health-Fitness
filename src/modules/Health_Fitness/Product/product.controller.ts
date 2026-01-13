@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as ProductService from "./product.service";
-import { sendSuccess, sendError } from "../../../lib/helper";
+import { sendSuccess, sendError } from "../../../utils/error";
 
 // create product
 export const createProduct = async (req: Request, res: Response) => {
@@ -15,11 +15,13 @@ export const createProduct = async (req: Request, res: Response) => {
 // get all products with optional search query
 export const getProducts = async (req: Request, res: Response) => {
   try {
-    const { name, slug } = req.query;
-
     const products = await ProductService.getProducts({
-      name: name as string | undefined,
-      slug: slug as string | undefined,
+      name: req.query.name as string | undefined,
+      slug: req.query.slug as string | undefined,
+      sortBy: req.query.sortBy as string | undefined,
+      sortOrder: req.query.sortOrder as "asc" | "desc" | undefined,
+      page: req.query.page ? Number(req.query.page) : undefined,
+      limit: req.query.limit ? Number(req.query.limit) : undefined,
     });
 
     sendSuccess(res, products);

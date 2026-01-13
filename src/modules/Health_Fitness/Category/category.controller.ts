@@ -1,49 +1,73 @@
 import { Request, Response } from "express";
 import * as CategoryService from "./category.service";
+import { sendSuccess, sendError } from "../../../utils/error";
 
-// create category
+/// Create category
 export const createCategory = async (req: Request, res: Response) => {
-  const category = await CategoryService.createCategory(req.body);
-  res.json(category);
+  try {
+    const category = await CategoryService.createCategory(req.body);
+    sendSuccess(res, category, "Category created successfully");
+  } catch (error: any) {
+    console.error(error);
+    sendError(res, "Failed to create category", error.message || error);
+  }
 };
 
-// get all categories
+// Get all categories
 export const getCategories = async (_req: Request, res: Response) => {
-  const categories = await CategoryService.getCategories();
-  res.json(categories);
+  try {
+    const categories = await CategoryService.getCategories();
+    sendSuccess(res, categories, "Categories fetched successfully");
+  } catch (error: any) {
+    console.error(error);
+    sendError(res, "Failed to fetch categories", error.message || error);
+  }
 };
 
-
-
-// get subcategories by slug
+// Get subcategories by slug
 export const getCategoryWithChildren = async (req: Request, res: Response) => {
-  const { slug } = req.params;
-  const category = await CategoryService.getCategoryWithChildrenBySlug(slug);
-  res.json(category);
+  try {
+    const { slug } = req.params;
+    const category = await CategoryService.getCategoryWithChildrenBySlug(slug);
+    sendSuccess(res, category, "Category with children fetched successfully");
+  } catch (error: any) {
+    console.error(error);
+    sendError(res, "Failed to fetch category with children", error.message || error);
+  }
 };
 
-// GET /:slug/products
-export const getProducts = async (req:Request, res:Response) => {
-  const { slug } = req.params;
-
-  const products = await CategoryService.getProductsByAnyCategorySlug(slug);
-
-  res.json({
-    success: true,
-    data: products
-  });
+// Get products by category slug
+export const getProducts = async (req: Request, res: Response) => {
+  try {
+    const { slug } = req.params;
+    const products = await CategoryService.getProductsByAnyCategorySlug(slug);
+    sendSuccess(res, products, "Products fetched successfully");
+  } catch (error: any) {
+    console.error(error);
+    sendError(res, "Failed to fetch products", error.message || error);
+  }
 };
 
-// update category
+// Update category
 export const updateCategory = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const category = await CategoryService.updateCategory(id, req.body);
-  res.json({ success: true, category });
+  try {
+    const { id } = req.params;
+    const category = await CategoryService.updateCategory(id, req.body);
+    sendSuccess(res, category, "Category updated successfully");
+  } catch (error: any) {
+    console.error(error);
+    sendError(res, "Failed to update category", error.message || error);
+  }
 };
-// delete category
 
+// Delete category
 export const deleteCategory = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const category = await CategoryService.deleteCategory(id);
-  res.json({ success: true, message: "category deleted", category });
+  try {
+    const { id } = req.params;
+    const category = await CategoryService.deleteCategory(id);
+    sendSuccess(res, category, "Category deleted successfully");
+  } catch (error: any) {
+    console.error(error);
+    sendError(res, "Failed to delete category", error.message || error);
+  }
 };
