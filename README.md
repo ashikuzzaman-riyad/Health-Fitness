@@ -7,13 +7,14 @@ This document contains **user, subcategory, and product information**.
 ## User Information
 
 ```json
+http://localhost:5000/api/users
 {
   "name": "John Doe",
   "email": "john@example.com",
   "role": "ADMIN"
 }
 category
-
+http://localhost:5000/api/categories
 {
   "name": "name hear"
 }
@@ -27,10 +28,11 @@ Copy code
 Product Information
 json
 Copy code
+http://localhost:5000/api/products
 {
-  "name": "Whey Protein 1kg",
-  "basePrice": 50.0,
-  "salePrice": 45.0,
+  "name": "milk Protein 1kg",
+  "basePrice": 70.0,
+  "salePrice": 55.0,
   "isActive": true,
   "description": "Premium muscle recovery protein.",
   "ingredients": "Whey, Lecithin, Cocoa",
@@ -51,7 +53,7 @@ Copy code
   ],
   "variants": [
     {
-      "sku": "WHEY-CHOC-1",
+      "sku": "WHEY-CHOC-5",
       "price": 45.0,
       "stock": 100,
       "isDefault": true,

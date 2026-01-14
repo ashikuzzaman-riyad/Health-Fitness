@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "../../../lib/prisma";
 import { cleanString } from "../../../utils/helper";
 
-import { CreateProductInput } from "./product.types";
+import { CreateProductInput, SearchQuery } from "./product.types";
 
 export async function createProduct(data: CreateProductInput) {
   return prisma.$transaction(async (tx) => {
@@ -101,14 +101,7 @@ export async function createProduct(data: CreateProductInput) {
 }
 
 // Search products with pagination and clean search
-export interface SearchQuery {
-  name?: string;
-  slug?: string;
-  page?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc"; // ✅ FIXED
-}
+
 
 export const getProducts = async (query?: SearchQuery) => {
   const filters: any = {};
@@ -158,19 +151,31 @@ export const getProductsBySlug = (slug: string) => {
   });
 };
 
-export const updateProduct = (id: string, data: any) => {
-  return prisma.product.findUnique({
+export const updateProduct = async (id: string, data: any) => {
+  return prisma.product.update({
     where: { id },
+    data: {
+      name: data.name,
+      basePrice: data.basePrice,
+      salePrice: data.salePrice,
+      description: data.description,
+      ingredients: data.ingredients,
+      nutritionInfo: data.nutritionInfo,
+      brand: data.brand,
+      expiryDays: data.expiryDays,
+      categoryId: data.categoryId,
+      isActive: data.isActive,
+    },
     include: {
-      category: true,   // Product's category
-      images: true,     // All product images
-      variants: {       // All variants
+      category: true,
+      images: true,
+      variants: {
         include: {
-          attributes: {    // Variant attributes
+          attributes: {
             include: {
-              attributeValue: { // Attribute value
+              attributeValue: {
                 include: {
-                  attribute: true, // The attribute itself
+                  attribute: true,
                 },
               },
             },
@@ -180,6 +185,7 @@ export const updateProduct = (id: string, data: any) => {
     },
   });
 };
+
 
 
 export const deleteProduct = async (id: string) => {

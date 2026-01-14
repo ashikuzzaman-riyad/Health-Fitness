@@ -30,3 +30,12 @@ export interface CreateProductInput {
   images?: ImageInput[];
   variants: VariantInput[];
 }
+
+export interface SearchQuery {
+  name?: string;
+  slug?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc"; // ✅ FIXED
+}
