@@ -8,6 +8,9 @@
 
 // export const prisma = new PrismaClient({ adapter });
 
+// src/lib/prisma.ts
+// src/lib/prisma.ts
+// src/lib/prisma.ts
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";

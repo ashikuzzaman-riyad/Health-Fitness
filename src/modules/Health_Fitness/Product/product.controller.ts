@@ -1,16 +1,21 @@
 import { Request, Response } from "express";
 import * as ProductService from "./product.service";
 import { sendSuccess, sendError } from "../../../utils/error";
+import { CreateProductInput }  from  "./product.types";
 
 // create product
-export const createProduct = async (req: Request, res: Response) => {
+export async function createProduct(
+  req: Request<{}, {}, CreateProductInput>,
+  res: Response
+) {
   try {
     const product = await ProductService.createProduct(req.body);
-    sendSuccess(res, product, "Product created");
+    sendSuccess(res, product);
   } catch (error) {
-    sendError(res, "Failed to create product", error);
+    console.error(error);
+    sendError(res, "Something went wrong while fetching products", error);
   }
-};
+}
 
 // get all products with optional search query
 export const getProducts = async (req: Request, res: Response) => {
