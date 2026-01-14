@@ -37,10 +37,10 @@ export const getProducts = async (req: Request, res: Response) => {
 };
 
 
-export const getProductsBySlug = async (req: Request, res: Response) => {
+export const getProductBySlug = async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
-    const product = await ProductService.getProductsBySlug(slug);
+    const product = await ProductService.getProductBySlug(slug);
     sendSuccess(res, product);
   } catch (error) {
     sendError(res, "Failed to fetch product", error);

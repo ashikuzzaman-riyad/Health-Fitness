@@ -1,27 +1,22 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../../lib/prisma";
-import { cleanString } from "../../../utils/helper";
+
 
 import { CreateProductInput, SearchQuery } from "./product.types";
+import makeSlug, { cleanString } from "../../../utils/helper";
 
 export async function createProduct(data: CreateProductInput) {
+  const productSlug = makeSlug(data.name);
   return prisma.$transaction(async (tx) => {
-  // Generate a base slug from the name
-  let baseSlug = cleanString(data.name, true); // e.g., "Organic Food" -> "organic-food"
-  let slug = baseSlug;
-  let counter = 1;
+ 
 
-  // Ensure slug is unique
-  while (await prisma.category.findUnique({ where: { slug } })) {
-    slug = `${baseSlug}-${counter}`;
-    counter++;
-  }
+ 
 
     // Create product
     return tx.product.create({
       data: {
         name: data.name,
-        slug, // use auto-generated unique slug
+        slug: productSlug, // use auto-generated unique slug
         basePrice: data.basePrice,
         salePrice: data.salePrice,
         description: data.description,
@@ -143,13 +138,72 @@ export const getProducts = async (query?: SearchQuery) => {
   });
 };
 
+export const getProductBySlug = async (slug: string) => {
+  return prisma.product.findFirst({
+    where: {
+      slug,
+      isActive: true,
+    },
 
-export const getProductsBySlug = (slug: string) => {
-  return prisma.product.findUnique({
-    where: { slug },
-    include: { category: true },
+    select: {
+      name: true,
+      slug: true,
+      basePrice: true,
+      salePrice: true,
+      description: true,
+      ingredients: true,
+      nutritionInfo: true,
+      brand: true,
+      expiryDays: true,
+
+      category: {
+        select: {
+          name: true,
+          slug: true,
+        },
+      },
+
+      images: {
+        select: {
+          url: true,
+          isMain: true,
+        },
+        orderBy: {
+          isMain: "desc",
+        },
+      },
+
+      variants: {
+        orderBy: {
+          isDefault: "desc",
+        },
+        select: {
+          sku: true,
+          price: true,
+          stock: true,
+          isDefault: true,
+
+          attributes: {
+            select: {
+              attributeValue: {
+                select: {
+                  value: true,
+                  attribute: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 };
+
+
 
 export const updateProduct = async (id: string, data: any) => {
   return prisma.product.update({

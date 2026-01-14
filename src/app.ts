@@ -11,7 +11,7 @@ const app: Application = express();
 applyGlobalMiddleware(app);
 
 // All API routes
-app.use("/api", routes);
+app.use("/api/v1", routes);
 
 // home
 app.get("/", (_req, res) => {

@@ -1,24 +1,17 @@
 import { prisma } from "../../../lib/prisma";
-import { cleanString } from "../../../utils/helper";
+import makeSlug from "../../../utils/helper";
+
 
 // create category
 export const createCategory = async (data: { name: string; parentId?: string }) => {
-  // Generate a base slug from the name
-  let baseSlug = cleanString(data.name, true); // e.g., "Organic Food" -> "organic-food"
-  let slug = baseSlug;
-  let counter = 1;
-
-  // Ensure slug is unique
-  while (await prisma.category.findUnique({ where: { slug } })) {
-    slug = `${baseSlug}-${counter}`;
-    counter++;
-  }
+  const categorySlug = makeSlug(data.name);
+  
 
   // Create category with unique slug
   const category = await prisma.category.create({
     data: {
       ...data,
-      slug,
+      slug: categorySlug,
     },
   });
 
